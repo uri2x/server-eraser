@@ -68,11 +68,11 @@ function deleteFile(name64, dir64) {
 function getDirList(dir64) {
   let dir = base64_decode(typeof dir64 == 'undefined' ? '' : dir64);
 
-  dir = path.join(startPoint, dir);
-  let dirname = dir.substr(startPoint.length);
+  dir = path.join(HOME_PATH, dir);
+  let dirname = dir.substr(HOME_PATH.length);
 
   if (!fs.existsSync(dir)) {
-    dir = startPoint;
+    dir = HOME_PATH;
     dirname = ''
   }
 
@@ -80,7 +80,7 @@ function getDirList(dir64) {
     dirname = path.sep;
 
   let result = { dir: dirname, dirs: [], files: [] };
-  if (dir != startPoint)
+  if (dir != HOME_PATH)
     result.dirs.push('..');
 
   fs.readdirSync(dir, { withFileTypes: true }).forEach(file => {
@@ -88,7 +88,7 @@ function getDirList(dir64) {
     const ext = fn.substr(-4).toLowerCase();
     if (!file.isFile())
       result.dirs.push(fn);
-    else if ((ext == '.mkv') || (ext == '.mp4'))
+    else if ((ext == '.mkv') || (ext == '.mp4') || (ext == '.avi'))
       result.files.push(fn.substr(0, fn.length - 4));
   });
   return result;

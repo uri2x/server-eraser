@@ -1,6 +1,7 @@
 const express = require("express");
 const path = require('path');
 const fs = require('fs');
+const xml2js = require('xml2js')
 
 const PORT = process.env.PORT || 3001;
 const CLIENT_PATH = process.env.CLIENT_PATH || '../web';
@@ -55,7 +56,7 @@ function deleteFile(name64, dir64) {
       return;
 
     const fn = file.name;
-    if (fn.substr(0, name.length) == name) {
+    if (fn.substring(0, name.length) == name) {
       const orgFile = path.join(dir, fn);
       const newFile = orgFile + '.bak';
       fs.rename(orgFile, newFile, () => { });
@@ -63,6 +64,23 @@ function deleteFile(name64, dir64) {
   });
 
   return {};
+}
+
+function getFileTitle(dir, fn) {
+  let nfoFile = path.join(dir, fn + '.nfo');
+  if (!fs.existsSync(nfoFile))
+    return fn;
+
+  let retval = fn;
+
+  const data = fs.readFileSync(nfoFile);
+  xml2js.parseString(data, (err, result) => {
+    if ((typeof result == 'object') && (typeof result.title == 'string') && (result.title.length)) {
+      retval = result.title;
+    }
+  });
+
+  return retval;
 }
 
 function getDirList(dir64) {
@@ -84,12 +102,14 @@ function getDirList(dir64) {
     result.dirs.push('..');
 
   fs.readdirSync(dir, { withFileTypes: true }).forEach(file => {
-    const fn = file.name;
+    let fn = file.name;
     const ext = fn.substr(-4).toLowerCase();
-    if (!file.isFile())
-      result.dirs.push(fn);
-    else if ((ext == '.mkv') || (ext == '.mp4') || (ext == '.avi'))
-      result.files.push(fn.substr(0, fn.length - 4));
+    if (!file.isFile()) {
+      result.dirs.push({ name: fn, title: fn });
+    } else if ((ext == '.mkv') || (ext == '.mp4') || (ext == '.avi')) {
+      fn = fn.substr(0, fn.length - 4);
+      result.files.push({ name: fn, title: getFileTitle(dir, fn) });
+    }
   });
   return result;
 }

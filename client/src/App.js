@@ -15,20 +15,20 @@ function Directory({ dir, name }) {
   );
 }
 
-function File({ dir, name }) {
+function File({ dir, name, title }) {
   const navigate = useNavigate();
 
   return (
     <div className="item">
-      {name}
+      {title}
       &nbsp;&nbsp;
-      <Link to="" onClick={() => DeleteFile(dir, name, navigate)}>&#128465;</Link>
+      <Link to="" onClick={() => DeleteFile(dir, name, title, navigate)}>&#128465;</Link>
     </div>
   );
 }
 
-function DeleteFile(dir, name, navigate) {
-  if (!window.confirm('Are you sure you with to delete ' + name + ' ?'))
+function DeleteFile(dir, name, title, navigate) {
+  if (!window.confirm('Are you sure you with to delete ' + title + ' ?'))
     return false;
 
   fetch("/api?del=" + base64_encode(name) + '&dir= ' + base64_encode(dir), { cache: "no-cache" })
@@ -83,8 +83,8 @@ function ShowDirectory() {
     return (
       <div className="dir">
         <h1>{items.dir}</h1>
-        {items.dirs.map((o, i) => (<Directory key={o} dir={items.dir} name={o} />))}
-        {items.files.map((o, i) => (<File key={o} dir={items.dir} name={o} />))}
+        {items.dirs.map((o, i) => (<Directory key={o.name} dir={items.dir} name={o.name} />))}
+        {items.files.map((o, i) => (<File key={o.name} dir={items.dir} name={o.name} title={o.title} />))}
       </div>
     );
   }

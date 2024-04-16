@@ -99,13 +99,13 @@ function getDirList(dir64) {
 
   let result = { dir: dirname, dirs: [], files: [] };
   if (dir != HOME_PATH)
-    result.dirs.push('..');
+    result.dirs.push({ name: '..', title: '⤶' });
 
   fs.readdirSync(dir, { withFileTypes: true }).forEach(file => {
     let fn = file.name;
     const ext = fn.substr(-4).toLowerCase();
     if (!file.isFile()) {
-      result.dirs.push({ name: fn, title: fn });
+      result.dirs.push({ name: fn, title: fn.replaceAll('.', ' ') });
     } else if ((ext == '.mkv') || (ext == '.mp4') || (ext == '.avi')) {
       fn = fn.substr(0, fn.length - 4);
       result.files.push({ name: fn, title: getFileTitle(dir, fn) });

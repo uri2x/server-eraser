@@ -7,10 +7,10 @@ function base64_encode(text) {
   return Buffer.from(text).toString('base64');
 }
 
-function Directory({ dir, name }) {
+function Directory({ dir, name, title }) {
   return (
     <div className="item">
-      <Link to={"/" + base64_encode(dir + "/" + name)}>&#128193;&nbsp;&nbsp;{name}</Link>
+      <Link to={"/" + base64_encode(dir + "/" + name)}>&#128193;&nbsp;&nbsp;{title}</Link>
     </div>
   );
 }
@@ -83,7 +83,7 @@ function ShowDirectory() {
     return (
       <div className="dir">
         <h1>{items.dir}</h1>
-        {items.dirs.map((o, i) => (<Directory key={o.name} dir={items.dir} name={o.name} />))}
+        {items.dirs.map((o, i) => (<Directory key={o.name} dir={items.dir} name={o.name} title={o.title} />))}
         {items.files.map((o, i) => (<File key={o.name} dir={items.dir} name={o.name} title={o.title} />))}
       </div>
     );

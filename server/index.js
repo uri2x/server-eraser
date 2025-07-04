@@ -11,9 +11,9 @@ const app = express();
 
 app.use(express.static(path.join(__dirname, CLIENT_PATH)));
 
-console.log('PORT=', PORT);
-console.log('CLIENT_PATH=', CLIENT_PATH);
-console.log('HOME_PATH=', HOME_PATH);
+console.log('PORT =', PORT);
+console.log('CLIENT_PATH =', CLIENT_PATH);
+console.log('HOME_PATH =', HOME_PATH);
 
 app.get("/api", (req, res) => {
   let result;
@@ -25,7 +25,7 @@ app.get("/api", (req, res) => {
   res.json(result);
 });
 
-app.get('/*', function (req, res) {
+app.get('/{*any}', function (req, res) {
   res.sendFile(path.join(__dirname, CLIENT_PATH + '/index.html'), function (err) {
     if (err)
       res.status(500).send(err)
